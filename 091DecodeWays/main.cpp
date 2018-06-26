@@ -24,24 +24,24 @@ public:
         }
 
         // if one char possible, call recursion without that letter
-        if (s.size() >= 1){
+        if (s.size() >= 1 && s[0] != '0'){
             numDecodings(s.substr(1), total);
+            
+            // if two char possible (26 or under), call recursion without those two
+            if (s.size() >= 2 && stoi(s.substr(0,2)) <= 26){
+                numDecodings(s.substr(2), total);
+            }
         }
-
-        // if two char possible (26 or under), call recursion without those two
-        if (s.size() >= 2 && stoi(s.substr(0,2)) <= 26){
-            numDecodings(s.substr(2), total);
-        }
-        
     }
 };
 
 int main(){
     Solution s;
-    
-    cout << s.numDecodings("52") << endl;
-    cout << s.numDecodings("25") << endl;
-    cout << s.numDecodings("226") << endl;
-    cout << s.numDecodings("22652") << endl;
+    // 1 7 8 7 8 9 7 7 5 9 9 6 6 2 6
+    // 17 8 7 8 9 7 7 5 9 9 6 6 26
+    cout << s.numDecodings("1787897759966261825913315262377298132516969578441236833255596967132573482281598412163216914566534565") << endl;
+    cout << s.numDecodings("1726") << endl;
+    cout << s.numDecodings("002") << endl;
+    cout << s.numDecodings("20202000000") << endl;
     return 0;
 }
