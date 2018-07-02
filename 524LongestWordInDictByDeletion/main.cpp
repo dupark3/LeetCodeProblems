@@ -14,7 +14,7 @@ bool sortBySize(const string& s1, const string& s2){
 
 class Solution {
 public:
-    string findLongestWord(string& s, vector<string>& d) {
+    string findLongestWord(const string& s, vector<string>& d) {
         sort(d.begin(), d.end(), sortBySize);
         // monkey, apple, plea, plee, ale
         // abpcplea
