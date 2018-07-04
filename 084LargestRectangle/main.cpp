@@ -5,34 +5,20 @@ using namespace std;
 
 class Solution {
 public:
+    template <class T>
+    int localMax(T begin, T end){
+        
+    }
+
     int largestRectangleArea(vector<int>& heights) {
-        int columns = heights.size();
-        int rows = 0;
-        for (int i = 0; i != columns; ++i){
-            if (heights[i] > rows){
-                rows = heights[i];
+        int max_width = heights.size();
+        int max_area = 0;
+        for (int i = max_width; i != 0; --i){
+            for (int j = 0; j != max_width - i + 1; ++j){
+                max_area = max(max_area, i * localMax(heights.begin() + j, heights.begin() + i));
             }
         }
-        cout << "COLUMNS : " << columns << endl
-             << "ROWS : " << rows << endl;
-
-        bool matrix[rows][columns];
-        for (int i = 0; i != rows; ++i){
-            for (int j = 0; j != columns; ++j){
-                if (heights[j] > i){
-                    matrix[i][j] = true;
-                } else {
-                    matrix[i][j] = false;
-                }
-            }
-        }
-
-        for (int i = 0; i != rows; ++i){
-            for (int j = 0; j != columns; ++j){
-                cout << matrix[i][j];
-            }
-            cout << endl;
-        }
+        return max_area;
     }
 };
 
