@@ -32,35 +32,35 @@ private:
 };
 */
 
-vector<int> dp;
+
 
 class Solution {
 public:
     int numTrees(int n) {
-        if (dp.empty()){
-            dp.push_back(1);
-        }
+        vector<int> dp(n+1,0);
+        dp[0] = 1;
+        dp[1] = 1;
         
-        if (n < dp.size()) {
+        if (n <= 1) {
             return dp[n];
         }
-
-        int result = 0;
         
-        for (int i = 0; i != n; ++i){
-            result += numTrees(i) * numTrees(n - 1 - i);
+        for (int i = 2; i <= n; ++i){
+            dp[i] = 0;
+            for (int j = 1; j <= i; ++j){
+                dp[i] += (dp[i - j] * dp[j - 1]);
+            }
         }
-
-        if (n == dp.size()) {
-            dp.push_back(result);
-        } 
-        return result;
+        
+        return dp[n];
     }
 };
 
 int main(){
     Solution solution;
-
-    cout << solution.numTrees(3) << endl;
+    for (int i = 0; i != 19; ++i){
+        cout << solution.numTrees(i) << endl;
+    }
+    
     return 0;
 }
