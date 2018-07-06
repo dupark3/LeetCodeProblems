@@ -35,11 +35,9 @@ public:
 
 int main(){
     Solution s;
-    // # of digits = 4 
-    // # of tens = 2
-    // # of overlapping tens = 2
-    // 
-    // answer : 3          0123
+    
+    //112336666
+    // 22619920
     cout << s.numDecodings("22619920") << endl;
     cout << s.numDecodings("1787897759966261825913315262377298132516969578441236833255596967132573482281598412163216914566534565") << endl;
     cout << s.numDecodings("1726") << endl;
