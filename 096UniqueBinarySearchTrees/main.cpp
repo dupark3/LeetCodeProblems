@@ -31,16 +31,29 @@ private:
     Node* head;
 };
 */
+
+vector<int> dp;
+
 class Solution {
 public:
     int numTrees(int n) {
-        if (n == 0){
-            return 1;
+        if (dp.empty()){
+            dp.push_back(1);
         }
+        
+        if (n < dp.size()) {
+            return dp[n];
+        }
+
         int result = 0;
+        
         for (int i = 0; i != n; ++i){
             result += numTrees(i) * numTrees(n - 1 - i);
         }
+
+        if (n == dp.size()) {
+            dp.push_back(result);
+        } 
         return result;
     }
 };
