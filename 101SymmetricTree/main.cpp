@@ -15,7 +15,9 @@ struct TreeNode {
 class Solution {
 public:
     bool isSymmetric(TreeNode* leftroot, TreeNode* rightroot){
+        if (leftroot->left && rightroot->right && leftroot->left->val == rightroot->right->val){
 
+        } else if (!leftroot->left && !rightroot->right)
     }
 
     bool isSymmetric(TreeNode* root) {
