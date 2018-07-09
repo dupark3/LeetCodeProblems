@@ -15,9 +15,25 @@ struct TreeNode {
 class Solution {
 public:
     bool isSymmetric(TreeNode* leftroot, TreeNode* rightroot){
-        if (leftroot->left && rightroot->right && leftroot->left->val == rightroot->right->val){
+        bool status;
+        if (  (leftroot->left && rightroot->right && 
+               leftroot->left->val == rightroot->right->val) 
+            || (!leftroot->left && !rightroot->right)){
+            status = true;
+        } else {
+            status = false;
+        }
 
-        } else if (!leftroot->left && !rightroot->right)
+        if (status && 
+            (leftroot->right && rightroot->left && 
+            leftroot->right->val == rightroot->left->val)
+            || (!leftroot->right && !rightroot->left)){
+            status = true;
+        } else {
+            status = false;
+        }
+
+        return status;
     }
 
     bool isSymmetric(TreeNode* root) {
