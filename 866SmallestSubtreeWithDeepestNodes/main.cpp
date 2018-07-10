@@ -39,18 +39,19 @@ void printTree(TreeNode* root){
     cout << endl;
 }
 
-int maxDepth(TreeNode* node){
-    if (!node){
-        return 0;
-    } else {
-        int left_depth = maxDepth(node->left);
-        int right_depth = maxDepth(node->right);
-        return max(left_depth, right_depth) + 1;
-    }
-}
 
 class Solution {
 public:
+    int maxDepth(TreeNode* node){
+        if (!node){
+            return 0;
+        } else {
+            int left_depth = maxDepth(node->left);
+            int right_depth = maxDepth(node->right);
+            return max(left_depth, right_depth) + 1;
+        }
+    }
+
     TreeNode* subtreeWithAllDeepest(TreeNode* root) {
         // check max depth to the left and to the right
         // if equal, return that node
@@ -90,7 +91,6 @@ int main(){
     TreeNode eight(8);
     TreeNode seven(7);
     TreeNode four(4);
-    TreeNode ten(10);
 
 
     root.left = &five;
@@ -101,7 +101,6 @@ int main(){
     one.right = &eight;
     two.left = &seven;
     two.right = &four;
-    seven.left = &ten;
 
     printTree(&root);
 
