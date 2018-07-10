@@ -49,35 +49,26 @@ public:
             int left_depth = maxDepth(node->left);
             int right_depth = maxDepth(node->right);
             return max(left_depth, right_depth) + 1;
-        }
+        }       
     }
 
     TreeNode* subtreeWithAllDeepest(TreeNode* root) {
-        // check max depth to the left and to the right
-        // if equal, return that node
-        // if left is greater, pointer = root->left, similar for right side
         if (!root){
             return 0;
         }
 
         TreeNode* pointer = root;
         while (pointer){
-            // get left max depth
             int left_depth = maxDepth(pointer->left);
-
-            // get right max depth
             int right_depth = maxDepth(pointer->right);
 
-            // compare and reset pointer or return current node
+            // if left and right depth are equal, current node contains all deepest nodes
             if (left_depth == right_depth){
                 return pointer;
             } else {
                 pointer = left_depth > right_depth ? pointer->left : pointer->right;
             }
         }
-        
-
-        return pointer;
     }
 };
 
