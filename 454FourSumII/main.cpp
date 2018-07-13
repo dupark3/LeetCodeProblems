@@ -26,8 +26,9 @@ public:
         for (int i = 0; i != CSize; ++i){
             for (int j = 0; j != DSize; ++j){
                 int inverseSum = (C[i] + D[j]) * -1;
-                if (hashmap.find(inverseSum) != hashmap.end()){
-                    total += hashmap[inverseSum];
+                auto iterator = hashmap.find(inverseSum);
+                if (iterator != hashmap.end()){
+                    total += iterator->second;
                 }
             }
         }
