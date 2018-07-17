@@ -34,13 +34,19 @@ public:
             ++i;
         }
         
+        int tenthOfIntMax = INT_MAX/10;
+
+        // pull off any integers until we see a non integer character
         while (i != size && isNumeric(str[i])){
-            if (negate == -1 && result * -1 < INT_MIN/10){
-                return INT_MIN;
-            } else if (result > INT_MAX / 10){
-                return INT_MAX;
+            if (result >= tenthOfIntMax){
+                if (negate == -1 && (result > tenthOfIntMax || str[i]-48 >= 8)){
+                    return INT_MIN;
+                } else if (negate == 1 && (result > tenthOfIntMax || (str[i]-48) >= 7)){
+                    return INT_MAX;
+                }
             }
-            result = (result * 10) + str[i] - 48;
+            
+            result = (result * 10) + (str[i] - 48);
             ++i;
         }
         
@@ -58,6 +64,7 @@ int main() {
     cout << solution.myAtoi("\ninvalid42") << endl;
     cout << solution.myAtoi("\n-4444444444444444442") << endl;
     cout << solution.myAtoi("\n+4444444444444444442") << endl;
-    cout << solution.myAtoi("2147483648") << endl;
+    cout << solution.myAtoi("-2147483647") << endl;
+    cout << solution.myAtoi("-91283472332") << endl;
     return 0;
 }
