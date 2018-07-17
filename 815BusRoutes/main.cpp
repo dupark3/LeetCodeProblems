@@ -8,13 +8,6 @@
 
 using namespace std;
 
-void printVector(const vector<int>& vector){
-    int size = vector.size();
-    for (int i = 0; i != size; ++i){
-        cout << vector[i] << " ";
-    }
-    cout << endl;
-}
 
 class Solution {
     class BusGraphNode{
@@ -24,8 +17,8 @@ class Solution {
 
     private:
         int stopNumber;
-        shared_ptr<BusGraphNode> next;
-        vector< shared_ptr<BusGraphNode> > transfer;
+        BusGraphNode* next;
+        vector< BusGraphNode* > transfer;
         bool containsDestination;
         bool visited;
     };
@@ -35,16 +28,15 @@ public:
         if (start == end){
             return 0;
         }
-        int numberOfBuses = routes.size();
-        int currentStop = start;
         
-        unordered_map<int, vector< shared_ptr<BusGraphNode> > > busConnections;
+        unordered_map<int, vector< BusGraphNode* > > busConnections;
 
-        vector< shared_ptr<BusGraphNode> > buses;
-        for (int i = 0; i != numberOfBuses; ++i){
-            buses.push_back(make_shared<BusGraphNode>(routes[i][0]));
-            shared_ptr<BusGraphNode> temp = buses[i];
-            
+        // vector< BusGraphNode* > buses;
+        for (int i = 0; i != routes.size(); ++i){
+            BusGraphNode* startingNode = new BusGraphNode(routes[i][0]);
+            BusGraphNode* temp = startingNode;
+
+            // save the current node in hashmap
             auto it = busConnections.find(routes[i][0]);
             if (it != busConnections.end()){
                 it->second.push_back(temp);
@@ -52,13 +44,15 @@ public:
                 busConnections[routes[i][0]].push_back(temp);
             }
             
+            // if current bus route contains destination, mark this loop as found
             bool destinationFound = false;
             if (routes[i][0] == end){
                 destinationFound = true;
             }
 
+            // go through the rest of the bus route and save in hashmap
             for (int j = 0; j != routes[i].size() - 1; ++j){
-                temp->next = make_shared<BusGraphNode>(routes[i][j + 1]);
+                temp->next = new BusGraphNode(routes[i][j + 1]);
                 temp = temp->next;
 
                 auto it = busConnections.find(routes[i][j+1]);
@@ -72,13 +66,14 @@ public:
                     destinationFound = true;
                 }
             }
-            temp->next = buses[i]; // connect back to the head of route
+            
+            temp->next = startingNode; // connect back to the head of route
             if (destinationFound){
-                temp = buses[i];
+                temp = startingNode;
                 do{
                     temp->containsDestination = true;
                     temp = temp->next;
-                } while (temp != buses[i]);
+                } while (temp != startingNode);
             }
         }
 
@@ -96,7 +91,7 @@ public:
         vector<int> possibleBusesTaken;
 
         // find all possible starting nodes
-        vector< shared_ptr<BusGraphNode> > startingNodes;
+        vector< BusGraphNode* > startingNodes;
         auto it = busConnections.find(start);
         int possibleStartingBuses = 0;
         if (it != busConnections.end()){
@@ -109,16 +104,16 @@ public:
         // go through every first bus and go to the end, pushing back 
         // number of buses taken if we reach the end
         for (int i = 0; i != possibleStartingBuses; ++i){
+            BusGraphNode* startingBusStop = startingNodes[i];
             int busesTaken = 1;
-            shared_ptr<BusGraphNode> startingBusStop = startingNodes[i];
 
             // shortest route, so breadth first search (only count transfers)
-            queue< shared_ptr<BusGraphNode> > myqueue;
+            queue< BusGraphNode* > myqueue;
             myqueue.push(startingBusStop);
             myqueue.push(0);
             
             while (!myqueue.empty()){
-                shared_ptr<BusGraphNode> currentNode = myqueue.front();
+                BusGraphNode* currentNode = myqueue.front();
                 if (currentNode == 0){
                     ++busesTaken;
                     myqueue.pop();
@@ -150,11 +145,21 @@ public:
                 myqueue.pop();
             }
             
-
-            if (currentStop == end){
-                possibleBusesTaken.push_back(busesTaken);
-            }
         }
+
+        // deallocate memory, but removed buses[i] to improve space
+/*        for (int i = 0; i != routes.size(); ++i){
+            BusGraphNode* temp = buses[i];
+            BusGraphNode* next = temp->next;
+            temp->next = 0;
+            for (int j = 0; j != routes[i].size(); ++j){
+                temp = next;
+                next = temp->next;
+                delete temp;
+            }
+        }*/
+
+
 
         // sort and return the smallest element if possible
         sort(possibleBusesTaken.begin(), possibleBusesTaken.end());
@@ -162,6 +167,7 @@ public:
         
     }
 };
+
 
 int main(){
     Solution solution;
