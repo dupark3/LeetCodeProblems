@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <iostream>
+#include <queue>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -12,14 +14,64 @@ void printVector(const vector<int>& vector){
     cout << endl;
 }
 
+class BusGraphNode{
+friend class Solution;
+public:
+    BusGraphNode(int n) : BusNumber(n), next(0) { }
+private:
+    int BusNumber;
+    BusGraphNode* next;
+    vector<BusGraphNode*> transfer;
+};
+
 class Solution {
 public:
     int numBusesToDestination(vector< vector<int> >& routes, int start, int end) {
         int numberOfBuses = routes.size();
         int currentStop = start;
+        
+        unordered_map<int, vector<BusGraphNode*>> busConnections;
 
+        vector< BusGraphNode* > buses;
+        for (int i = 0; i != numberOfBuses; ++i){
+            buses.push_back(new BusGraphNode(routes[i][0]));
+            BusGraphNode* temp = buses[i];
+            
+            auto it = busConnections.find(routes[i][0]);
+            if (it != busConnections.end()){
+                it->second.push_back(temp);
+            } else {
+                busConnections[routes[i][0]].push_back(temp);
+            }
+
+            for (int j = 0; j != routes[i].size() - 1; ++j){
+                temp->next = new BusGraphNode(routes[i][j + 1]);
+                temp = temp->next;
+
+                auto it = busConnections.find(routes[i][j+1]);
+                if (it != busConnections.end()){
+                    it->second.push_back(temp);
+                } else {
+                    busConnections[routes[i][j+1]].push_back(temp);
+                }
+            }
+            temp->next = buses[i]; // connect back to the head of route
+        }
+
+        // connect all transfers to each other
+        for (auto i = busConnections.begin(); i != busConnections.end(); ++i){
+            for (int j = 0; j != i->second.size(); ++j){
+                for (int k = 0; k != i->second.size(); ++k){
+                    if (j != k){
+                        cout << "connecting " << i->first << " transfers" << endl;
+                        i->second[j]->transfer.push_back(i->second[k]);
+                    }
+                }
+            }
+        }
+
+/*        // find all possible bus number to ride first
         vector<int> startingBuses;
-
         for (int i = 0; i != numberOfBuses; ++i){
             for (int j = 0; j != routes[i].size(); ++j){
                 if (start == routes[i][j]){
@@ -27,22 +79,33 @@ public:
                     break;
                 }
             }
-        }
-        printVector(startingBuses);
-
-        vector<int> viableTransfers = { -1 };
-        int transfers = 1;
-
-        for (int i = 0; i != numberOfBuses; ++i){
-
-        }
-
-        if (currentStop == end){
-            viableTransfers.push_back(transfers);
-        }
+        }*/
         
+        vector<int> viableTransfers;
+
+        // go through every first bus and go to the end, pushing back 
+        // number of buses taken if we reach the end
+        auto it = busConnections.find(start);
+        int possibleStartingBuses = 0;
+        if (it != busConnections.end()){
+            possibleStartingBuses = it->second.size();
+            cout << "starting possible at "<< possibleStartingBuses << endl;
+        } 
+        for (int i = 0; i != possibleStartingBuses; ++i){
+            int transfers = 1;
+
+            // shortest route, so breadth first search (only count transfers)
+            queue<int> myqueue;
+
+
+            if (currentStop == end){
+                viableTransfers.push_back(transfers);
+            }
+        }
+
+        // sort and return the smallest element if possible
         sort(viableTransfers.begin(), viableTransfers.end());
-        return viableTransfers[viableTransfers.size() - 1];
+        return viableTransfers.size() > 0 ? viableTransfers[0] : -1;
         
     }
 };
