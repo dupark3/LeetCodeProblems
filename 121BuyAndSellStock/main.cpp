@@ -11,21 +11,14 @@ public:
     int maxProfit(vector<int>& prices) {
         size_t prices_size = prices.size();
         
-        if (prices_size <= 1){
-            return 0;
-        }
+        if (prices_size <= 1) return 0;
 
-        vector<int> local_maxes(prices_size, 0);
-        int max_price = 0; 
+        vector<int> local_maxes(prices_size + 1, 0);
+        int max_price = 0, max_profit = 0; 
 
         for (int i = prices_size - 1; i != -1; --i){
             max_price = max(max_price, prices[i]);
-            local_maxes[i] = max(max_price, prices[i]);
-        }
-
-        int max_profit = 0;
-
-        for (int i = 0; i != prices_size - 1; ++i){
+            local_maxes[i] = max_price;
             max_profit = max(max_profit, local_maxes[i+1] - prices[i]);
         }
 
