@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <climits>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
@@ -14,12 +15,18 @@ public:
             return 0;
         }
 
+        vector<int> local_maxes(prices_size, 0);
+        int max_price = 0; 
+
+        for (int i = prices_size - 1; i != -1; --i){
+            max_price = max(max_price, prices[i]);
+            local_maxes[i] = max(max_price, prices[i]);
+        }
+
         int max_profit = 0;
 
-        for (int i = 0; i != prices_size; ++i){
-            for (int j = i + 1; j != prices_size; ++j){
-                max_profit = max(max_profit, prices[j] - prices[i]);
-            }
+        for (int i = 0; i != prices_size - 1; ++i){
+            max_profit = max(max_profit, local_maxes[i+1] - prices[i]);
         }
 
         return max_profit;
@@ -29,12 +36,10 @@ public:
 int main() {
     Solution solution;
     vector<int> prices = {7, 1, 3, 5, 6, 1, 2, 0};
-    vector<int> prices2 = {};
     vector<int> prices3 = {7, 6, 5, 4, 3, 1};
-    vector<int> prices4 = {8, 1000, 1, 7, 1, 3, 5, 10, -1, 6, 1, 2, -100000};
+    vector<int> prices4 = {8, 1000, 1, 7, 1, 3, 5, 10, -1, 6, 1, 2, 0};
 
     cout << solution.maxProfit(prices) << endl;
-    cout << solution.maxProfit(prices2) << endl;
     cout << solution.maxProfit(prices3) << endl;
     cout << solution.maxProfit(prices4) << endl;
     return 0;
