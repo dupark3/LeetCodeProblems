@@ -4,63 +4,60 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <unordered_set>
 
 using namespace std;
 
 class Solution {
 public:
-
-    bool oneEditAway(string firstWord, string secondWord){
-        // all words have same length assumption given, so no check
-        size_t wordSize = firstWord.size();
-        bool firstDifferenceEncountered = false;
+    void addNextWords(const string& word, queue<string>& toVisit, unordered_set<string>& wordList){
+        wordList.erase(word);
+        size_t wordSize = word.length();
+        
         for (int i = 0; i != wordSize; ++i){
-            if (firstWord[i] != secondWord[i]){
-                if (firstDifferenceEncountered){
-                    return false;
+            string newWord = word;
+            for (int j = 0; j != 26; ++j){
+                newWord[i] = 'a' + j;
+                if (wordList.find(newWord) != wordList.end()){
+                    toVisit.push(newWord);
+                    wordList.erase(newWord);
                 }
-                firstDifferenceEncountered = true;
             }
         }
-        return true;
     }
-    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
-        if (find(wordList.begin(), wordList.end(), endWord) == wordList.end()){
+
+    int ladderLength(string beginWord, string endWord, unordered_set<string>& wordList) {
+        if (beginWord == endWord){
+            return 1;
+        } else if (wordList.find(endWord) == wordList.end()){
             return 0;
         }
-        size_t dictSize = wordList.size();
-        bool visited[dictSize] = { false };
-        
-        queue<string> myqueue;
-        myqueue.push(beginWord);
-        myqueue.push("");
+        queue<string> toVisit;
+        addNextWords(beginWord, toVisit, wordList);
+        int answer = 2;
 
-        int shortestSequence = 1;
-        while(!myqueue.empty()){
-            
-            if (myqueue.front() == ""){
-                myqueue.pop();
-                ++shortestSequence;
-                myqueue.push("");
-                if (myqueue.front() == ""){
-                    break;
+        while(!toVisit.empty()){
+            int toVisitSize = toVisit.size();
+            for (int i = 0; i != toVisitSize; ++i){
+                if (toVisit.front() == endWord){
+                    return answer;
                 }
+                addNextWords(toVisit.front(), toVisit, wordList);
+                toVisit.pop();
             }
-            if (myqueue.front() == endWord){
-                return shortestSequence;
-            }
-            
-            for (int i = 0; i != dictSize; ++i){
-                if (visited[i] == false && oneEditAway(myqueue.front(), wordList[i])){
-                    myqueue.push(wordList[i]);
-                    visited[i] = true;
-                }
-            }
- 
-            myqueue.pop();
+            ++answer;
         }
         return 0;
     }
+        int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+            unordered_set<string> wordSet;
+            int wordListSize = wordList.size();
+            for (int i = 0; i != wordListSize; ++i){
+                wordSet.insert(wordList[i]);
+            }
+            
+            return ladderLength(beginWord, endWord, wordSet);
+        }
 };
 
 int main(){
