@@ -1,42 +1,61 @@
 #include <algorithm>
 #include <iostream>
-#include <queue>
+#include <unordered_map>
+#include <list>
+
+using namespace std;
+
 
 class LRUCache {
 public:
-    LRUCache(int c) {
-        capacity = c;
-    }
+    LRUCache(int c) : capacity(c), numberOfElements(0) { }
     
     int get(int key) {
-        
+        if (keyValue.find(key) != keyValue.end()){
+            accessed(key);
+            return keyValue[key];
+        } else {
+            return -1;
+        }
     }
     
     void put(int key, int value) {
-        keyValue[key] = value;
-        accessed(key);
-
-        if (keyOrderQueue.size() > capacity){
-            int evictKey = keyOrderQueue.front();
-            keyOrderQueue.pop();
-
+        if (keyValue.find(key) == keyValue.end()){
+            keyValue[key] = value;
+            ++numberOfElements;
+        } else {
+            keyValue[key] = value;
         }
-        
+        accessed(key);
+        if (numberOfElements > capacity){
+            evict();
+        }
     }
 
 
 private:
     int capacity;
+    int numberOfElements;
     unordered_map<int, int> keyValue;
-    queue<int> keyOrderQueue;
+    // doubly linked list. tail gets evicted if capacity exceeded.
+    list<int> lastAccessed;   
 
     void accessed(int key){
-        // move key up to the front of queue 
-        if (find(keyOrderQueue.begin(), keyOrderQueue.end(), key) == keyOrderQueue.end()){
-            keyOrderQueue.push(key);
-        } else {
-            // key found, delete it and move up
+        // erase key from anywhere in the list if it is found
+        auto it = find(lastAccessed.begin(), lastAccessed.end(), key);
+        if (it != lastAccessed.end()){
+            lastAccessed.erase(it);
         }
+
+        // put the accessed key at the very back of the list
+        lastAccessed.push_back(key);
+    }
+
+    void evict(){
+        // erase element from hashmap and pop from list
+        keyValue.erase(lastAccessed.front());
+        lastAccessed.pop_front();
+        --numberOfElements;
     }
 };
 
@@ -50,6 +69,18 @@ private:
 int main(){
     LRUCache* obj = new LRUCache(2);
     obj->put(2,1);
-    int param_1 = obj->get(2);
+    obj->put(1,1);
+    obj->put(2,3);
+    obj->put(4,1);
+    cout << obj->get(1) << endl; // returns -1
+    cout << obj->get(2) << endl; // returns 3
+    /*obj->put(3,30); // pops 2
+    cout << obj->get(2) << endl; // returns -1
+    obj->put(4,40); // pops 1
+    obj->put(5,50); // pops 3
+    cout << obj->get(1) << endl; // returns -1
+    cout << obj->get(3) << endl; // returns -1
+    cout << obj->get(4) << endl; // returns 40*/
+
     return 0;
 }
