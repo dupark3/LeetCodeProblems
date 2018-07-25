@@ -37,23 +37,32 @@ private:
     int capacity;
     int numberOfElements;
     unordered_map<int, int> keyValue;
+    unordered_map<int, list<int>::iterator> listIterators;
     // doubly linked list. tail gets evicted if capacity exceeded.
     list<int> lastAccessed;   
 
     void accessed(int key){
-        // erase key from anywhere in the list if it is found
+        // erase key
+        if (listIterators.find(key) != listIterators.end()){
+            lastAccessed.erase(listIterators[key]);
+            listIterators.erase(key);
+        }
+/*        // erase key from anywhere in the list if it is found
         auto it = find(lastAccessed.begin(), lastAccessed.end(), key);
         if (it != lastAccessed.end()){
             lastAccessed.erase(it);
-        }
+        }*/
 
         // put the accessed key at the very back of the list
         lastAccessed.push_back(key);
+        auto it = lastAccessed.end();
+        listIterators[key] = --it;
     }
 
     void evict(){
         // erase element from hashmap and pop from list
         keyValue.erase(lastAccessed.front());
+        listIterators.erase(lastAccessed.front());
         lastAccessed.pop_front();
         --numberOfElements;
     }
