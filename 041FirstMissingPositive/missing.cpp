@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <unordered_set>
 
 
 using namespace std;
@@ -31,13 +32,27 @@ public:
 
         return 1;
     }
+
+    int firstMissingPositiveHash(vector<int>& nums) {
+        unordered_set<int> set;
+        for (int i = 0; i != nums.size(); ++i){
+            set.insert(nums[i]);
+        }
+
+        for (int i = 1; ; ++i){
+            if (set.find(i) == set.end()){
+                return i;
+            }
+        }
+
+    }
 };
 
 
 int main(){
     Solution solution;
     vector<int> nums = {1, 1, 3, 3, 2, 3, 5, 6, 7, 8, 9, 10, 12, 13};
-    cout << solution.firstMissingPositive(nums) << endl;
+    cout << solution.firstMissingPositiveHash(nums) << endl;
 
     return 0;
 }
