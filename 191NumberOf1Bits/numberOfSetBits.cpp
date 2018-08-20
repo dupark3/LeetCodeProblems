@@ -6,18 +6,26 @@ class Solution {
 public:
     int hammingWeight(uint32_t n) {
         int total = 0;
-        for (uint64_t i = 1; i <= n; i = i << 1){
+        while (n != 0){
+            if (n & 1){
+                ++total;
+            }
+            n >>= 1;
+        }
+
+        return total;
+/*        for (uint64_t i = 1; i <= n; i = i << 1){
             if (i & n){
                 ++total;
             }
-        }
-        return total;
+        }*/
+
     }
 };
 
 int main(){
     Solution solution;
-    uint32_t max = 2147483649;
+    uint32_t max = 2147483648 * 2 - 1;
     cout << max << endl;
 
     cout << solution.hammingWeight(0) << endl; // 0 => 0
