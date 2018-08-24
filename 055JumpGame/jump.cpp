@@ -5,6 +5,18 @@ using namespace std;
 
 class Solution {
 public:
+    bool canJump2(const vector<int>& nums){
+        int target = nums.size() - 1;
+
+        for (int i = nums.size() - 2; i >= 0; --i){
+            if (i + nums[i] >= target){
+                target = i;
+            }
+        }
+
+        return target == 0;
+    }
+
     bool canJump(const vector<int>& nums) {
         last_index = nums.size() - 1;
         
@@ -49,9 +61,9 @@ private:
 
 int main() {
     Solution solution;
-    vector<int> nums = {3, 2, 1, 0, 0};
+    vector<int> nums = {2,3,1,1,4};
     
-    if (solution.canJump(nums)){
+    if (solution.canJump2(nums)){
         cout << "can jump" << endl;
     } else {
         cout << "can't jump" << endl;
