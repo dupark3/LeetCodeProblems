@@ -14,36 +14,28 @@ public:
             return nums[0];
         }
         
-        int maximum = INT_MIN;
-        for (int i = 0; i != nums.size(); ++i){
-            maximum = max(maximum, products(nums, i));
+        int posMax[nums.size()];
+        int negMax[nums.size()];
+        int result = nums[0];
+        posMax[0] = nums[0];
+        negMax[0] = nums[0];
+
+        // find the number of negatives
+        for (int i = 1; i != nums.size(); ++i){
+            posMax[i] = max(nums[i], max(posMax[i-1] * nums[i], negMax[i-1]*nums[i]));
+            negMax[i] = min(nums[i], min(posMax[i-1] * nums[i], negMax[i-1]*nums[i]));
+            result = max(result, max(posMax[i], negMax[i]));
         }
 
-        return maximum;
+        return result;
     }
 
-private:
-    int products(vector<int>& nums, int start){
-        int maximum = INT_MIN;
-        for (int i = start; i != nums.size(); ++i){
-            maximum = max(maximum, subarrayProduct(nums, start, i));
-        }
-        return maximum;
-    }
-
-    int subarrayProduct(vector<int>& nums, int start, int end){
-        int product = nums[start];
-        for (int i = start + 1; i <= end; ++i){
-            product *= nums[i];
-        }
-        return product;
-    }
 };
 
 int main(){
     Solution solution;
 
-    vector<int> nums = {1, 2, 0, 3, 5, -2, -2};
+    vector<int> nums = {1, 2, -3, 3, 5, -2, -2};
     cout << solution.maxProduct(nums) << endl;
 
     return 0;
