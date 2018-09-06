@@ -11,19 +11,18 @@ public:
         vector<vector<string>> groups;
 
         // loop through words and find matching anagram if any
-        while(!strs.empty()){
+        for (int i = 0; i != strs.size(); ++i){
             bool anagramFound = false;
-            for (int i = 0; i != groups.size(); ++i){
-                if(isAnagram(groups[i][0], strs.back())){
-                    groups[i].push_back(strs.back());
+            for (int j = 0; j != groups.size(); ++j){
+                if(isAnagram(groups[j][0], strs[i])){
+                    groups[j].push_back(strs[i]);
                     anagramFound = true;
                     break;
                 }
             }
             if (!anagramFound){
-                groups.push_back({strs.back()});
+                groups.push_back({strs[i]});
             }
-            strs.pop_back();
         }
 
         return groups;
@@ -34,25 +33,22 @@ public:
             return false;
         }
         
-        unordered_map<char, int> char_map;
+        unsigned int bitMap = 0;
         for (int i = 0; i != s1.size(); ++i){
-            char_map[s1[i]]++;
-            char_map[s2[i]]--;
+            bitMap ^= s1[i];
+            bitMap ^= s2[i];
         }
         
-        for (int i = 0; i != s1.size(); ++i){
-            if (char_map[s1[i]] != 0){
-                return false;
-            }
-        }
-
-        return true;
+        if (bitMap == 0){
+            return true;
+        } 
+        return false;
     }
 };
 
 int main(){
     Solution solution;
-    vector<string> strs = {"eat", "ate", "cat", "atc", "bat", "tab"};
+    vector<string> strs = {"bat", "eat", "ate", "tab", "cat"};
     vector<vector<string>> result = solution.groupAnagrams(strs);
 
     for (int i = 0; i != result.size(); ++i){
