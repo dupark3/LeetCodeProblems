@@ -6,15 +6,38 @@ using namespace std;
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
-        
+        if (nums.empty()){
+            return 0;
+        }
+        auto trail = nums.begin();
+        auto lead = trail + 1;
+        int current = *trail;
+        int size = 1;
+
+        while (lead != nums.end()){
+            if (*lead != current){
+                swap(++trail, lead);
+                ++size;
+                current = *trail;
+            } 
+            ++lead;
+        }
+
+        return size;
+    }
+
+    void swap(vector<int>::iterator x, vector<int>::iterator y){
+        int temp = *x;
+        *x = *y;
+        *y = temp;
     }
 };
 
 int main(){
     Solution solution;
-    vector<int> sortedNums = {0, 0, 0, 1, 1, 2, 3, 5, 6, 6};
-    
-    int newSize = solution.sortedNums;
+    vector<int> sortedNums = {0, 1, 2, 3, 4, 4, 4, 5, 6};
+
+    int newSize = solution.removeDuplicates(sortedNums);
 
     cout << "Size of array without duplicates is " 
          << newSize << endl;
