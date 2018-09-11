@@ -9,8 +9,8 @@ public:
         if (nums.empty()){
             return 0;
         }
-        auto trail = nums.begin();
-        auto lead = trail + 1;
+        vector<int>::iterator trail = nums.begin();
+        vector<int>::iterator lead = trail + 1;
         int size = 1;
 
         while (lead != nums.end()){
