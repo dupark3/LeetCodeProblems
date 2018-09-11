@@ -11,14 +11,14 @@ public:
         }
         auto trail = nums.begin();
         auto lead = trail + 1;
-        int current = *trail;
         int size = 1;
 
         while (lead != nums.end()){
-            if (*lead != current){
-                swap(++trail, lead);
+            if (*lead != *trail){
                 ++size;
-                current = *trail;
+                if (lead != ++trail){
+                    swap(trail, lead);
+                }
             } 
             ++lead;
         }
