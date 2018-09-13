@@ -12,9 +12,17 @@ public:
         if (!binary_search(nums.begin(), nums.end(), target)){
             return {-1, -1};
         }
+
+        // iterator returned that points to the first element not less than target
+        vector<int>::iterator lower = lower_bound(nums.begin(), nums.end(), target);
         
-        int first = lower_bound(nums.begin(), nums.end(), target) - nums.begin();
-        int last = upper_bound(nums.begin(), nums.end(), target) - nums.begin() - 1;
+        // get index of lower iterator
+        int first = lower - nums.begin();
+
+        // find the index of the last element that matches target
+        // upper_bound returns an iterator to the first element greater than target
+        // subtract 1 from upper_bound - begin to get the right index
+        int last = upper_bound(lower, nums.end(), target) - nums.begin() - 1;
         
         return {first, last};
     }
