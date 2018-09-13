@@ -8,21 +8,18 @@ using namespace std;
 class Solution {
 public:
     vector<int> searchRange(vector<int>& nums, int target) {
-        if (nums.empty()){
+        // if target does not exist, return -1
+        if (!binary_search(nums.begin(), nums.end(), target)){
             return {-1, -1};
         }
-
-        int left = 0;
-        int right = nums.size();
-
-        // find the left most target and right most target, if any
-        int first = firstBinarySearch(left, right, nums, target);
-        int last = lastBinarySearch(left, right, nums, target);
+        
+        int first = lower_bound(nums.begin(), nums.end(), target) - nums.begin();
+        int last = upper_bound(nums.begin(), nums.end(), target) - nums.begin() - 1;
         
         return {first, last};
     }
 
-    int firstBinarySearch(int left, int right, const vector<int>& nums, int target){
+    /*int firstBinarySearch(int left, int right, const vector<int>& nums, int target){
         while(true){
             int mid = left + (right - left) / 2;
             if (right - left <= 1 && nums[mid] != target){
@@ -71,12 +68,12 @@ public:
                 }
             }
         }
-    }
+    }*/
 };
 
 int main(){
     Solution solution;
     vector<int> nums = {5, 6, 8, 8, 8, 9, 9, 11};
-    vector<int> range = solution.searchRange(nums, 10);
+    vector<int> range = solution.searchRange(nums, 9);
     cout << range[0] << ", " << range[1] << endl; // 2, 4
 }
