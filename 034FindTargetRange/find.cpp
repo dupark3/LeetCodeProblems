@@ -8,14 +8,11 @@ using namespace std;
 class Solution {
 public:
     vector<int> searchRange(vector<int>& nums, int target) {
-        // if target does not exist, return -1
-        if (!binary_search(nums.begin(), nums.end(), target)){
-            return {-1, -1};
-        }
-
         // iterator returned that points to the first element not less than target
         vector<int>::iterator lower = lower_bound(nums.begin(), nums.end(), target);
-        
+        if (lower == nums.end() || *lower != target){
+            return {-1, -1};
+        }
         // get index of lower iterator
         int first = lower - nums.begin();
 
