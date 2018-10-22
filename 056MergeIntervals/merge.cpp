@@ -23,22 +23,22 @@ public:
         sort(intervals.begin(), intervals.end(), start);
 
         for(int i = 0; i != intervals.size(); ++i){
-            int end = intervals[i].end;
-
+            
             if (!checked[i]){
+                int end = intervals[i].end;
+
                 for(int j = i + 1; j != intervals.size(); ++j){
-                    if (checked[j]){
-                        continue;
-                    }
-                    if (end >= intervals[j].start){
+                    if (!checked[j] && end >= intervals[j].start){
                         end = max(intervals[j].end, end);
                         intervals[i].end = end;
                         checked[j] = true;
                     }
                 }
+                
                 results.push_back(intervals[i]);
                 checked[i] = true;
             }
+
         }
 
         return results;      
